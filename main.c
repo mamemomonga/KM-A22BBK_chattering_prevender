@@ -19,7 +19,6 @@
 #define PC2LED_HIGH PORTB |=  _BV(PB1)
 #define PC2LED_LOW  PORTB &=~ _BV(PB1)
 
-
 volatile uint8_t bt_state=0;
 
 int main(void) {
@@ -43,24 +42,23 @@ int main(void) {
     for(;;){
 
 		if( BTN_HIGH ) {
-			bt_state=0;
-		} else {
 			bt_state=1;
-		}
 
+		} else {
+			if( bt_state == 1 ) {
+				LINE_LOW;
+				_delay_ms(10);
+				LINE_HIGH;
+				_delay_ms(100);
+			}
+			bt_state = 0;
+		}
 		if( PC2ON_HIGH ) {
 			PC1LED_LOW;
 			PC2LED_HIGH;
 		} else {
 			PC1LED_HIGH;
 			PC2LED_LOW;
-		}
-
-		if( bt_state == 1 ) {
-			LINE_LOW;
-			_delay_ms(50);
-			LINE_HIGH;
-			_delay_ms(1000);
 		}
 		_delay_ms(10);
     }
