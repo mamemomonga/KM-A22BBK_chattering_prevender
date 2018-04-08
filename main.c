@@ -21,6 +21,16 @@
 
 volatile uint8_t bt_state=0;
 
+void pcled(void) {
+	if( PC2ON_HIGH ) {
+		PC1LED_LOW;
+		PC2LED_HIGH;
+	} else {
+		PC1LED_HIGH;
+		PC2LED_LOW;
+	}
+}
+
 int main(void) {
 	BTN_DIR;
 	PC2ON_DIR;
@@ -34,7 +44,7 @@ int main(void) {
 	PC2LED_DIR;
 	PC2LED_HIGH;
 
-	_delay_ms(1000);
+	_delay_ms(500);
 
 	PC1LED_LOW;
 	PC2LED_LOW;
@@ -49,17 +59,24 @@ int main(void) {
 				LINE_LOW;
 				_delay_ms(10);
 				LINE_HIGH;
-				_delay_ms(100);
+				for(uint8_t i=0;i<=5;i++) {
+					PC1LED_HIGH; PC2LED_HIGH;
+					_delay_ms(30);
+					PC1LED_LOW; PC2LED_LOW;
+					_delay_ms(30);
+				}
+				pcled();
+				for(uint8_t i=0;i<=3;i++) {
+					PC1LED_LOW; PC2LED_LOW;
+					_delay_ms(100);
+					pcled();
+					_delay_ms(100);
+				}
+
 			}
 			bt_state = 0;
 		}
-		if( PC2ON_HIGH ) {
-			PC1LED_LOW;
-			PC2LED_HIGH;
-		} else {
-			PC1LED_HIGH;
-			PC2LED_LOW;
-		}
+		pcled();
 		_delay_ms(10);
     }
     return 0;
